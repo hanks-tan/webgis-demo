@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+</head>
+<body>
+  <div id="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h3>视频列表</h3>
+        <ul class="list-group" id="list">
+        </ul>
+      </div>
+    </div class="col-md-8" id="map">
+
+    </div>
+  </div>
+  <script>
+    $(document).ready(function(){
+      var root = document.getElementById('list')
+      for (let index = 0; index < 100; index++) {
+        const element = document.createElement('li');
+        element.className = 'list-group-item';
+        const a = document.createElement('a');
+        var id = '192.168.2.' + index.toString();
+        // a.onclick = function(){
+        //   socket = io();
+        //   socket.on('message',function(message){
+        //     console.log(message)
+        //   })
+
+        //   socket.emit('message', '{"head": "webuser","videoID": 43}');
+        // }
+        a.href = `/video_map`
+        a.innerText = id
+        element.appendChild(a)
+        root.appendChild(element);
+      }
+    })
+  </script>
+</body>
+</html>

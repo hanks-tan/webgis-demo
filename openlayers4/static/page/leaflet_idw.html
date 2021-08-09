@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>  
+    <style>
+        html,body,#map {
+            width: 100%;
+            height: 700px;
+            border: 0pc;
+            background-color: black
+        }
+    </style>
+    <script src="/js/jquery/jquery-3.3.1.min.js"></script>
+    <script src = "/js/ol4/v4.6.5-dist/ol.js"></script>
+    <script src="/js/unit/color.js"></script>
+</head>
+<body>
+    <div>
+        <button id="add">air</button>
+    </div>
+    <div id="map">
+    </div>
+    <script src="/js/map/idw.js"></script>
+    <script>
+        var map;
+        $(document).ready(function(){
+            var baselayer = new ol.layer.Tile({
+                source: new ol.source.TileWMS({
+                    url: 'http://10.18.224.161:8080/geoserver/serverTest/wms',
+                    params: {
+                        'LAYERS': 'serverTest:chinaBaseMap',
+                        'TILED': true
+                    },
+                    transition: 1
+                }),
+                opacity: 0.8
+            });
+            map = new ol.Map({
+                target: 'map',
+                layers:[baselayer],
+                view: new ol.View({
+                    projection: "EPSG:4326",
+                    center: [114.024, 32.697],
+                    zoom: 5,
+                })
+            })
+        });
+        $('#add').click(function(){
+            var url = '/data/p_province_air_test.geojson';
+            showIDW(url);
+        })
+        function showIDW(dataURL){
+
+            $.getJSON(dataURL,function(data){
+                showcity(data);
+                var inputdata = [];
+                features = data.features;
+                features.forEach(element => {
+                    var coord = element.geometry.coordinates;
+                    var v = element.properties.AQI;
+                    var city = element.properties.NAME;
+                    inputdata.push([coord[0],coord[1],v]);
+                });
+                var isFirst = true
+                var airLayer = new ol.layer.Image({
+                    source: new ol.source.ImageCanvas({
+                        canvasFunction:(extent, resolution, pixelRatio, size, projection) =>{
+                            if(isFirst){
+                                let canvas = document.createElement('canvas');
+                                canvas.width = size[0];
+                                canvas.height = size[1];
+                                canvas.style.display='block';
+                                idwLayer = new IdwLayer(canvas,inputdata,extent);
+                                idwLayer.draw();
+                                isFirst = false;//避免多次渲染
+                                return canvas;
+                            }
+                        }
+                    }),
+                    opacity: 0.9
+                })
+                map.addLayer(airLayer);
+            })
+        }
+        function showcity(geojson){
+            var vectorLayer = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    features: new ol.format.GeoJSON().readFeatures(geojson)
+                }),
+                style: function(feature){
+                    var api = parseInt(feature.get("AQI"));
+                    var style = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            fill: new ol.style.Fill({
+                                color: '#FFFF00'
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: '#CDC9C9',
+                                width: 1
+                            }),
+                            radius: api / 10,
+                        }),
+                        text: new ol.style.Text({
+                            text: api.toString()
+                        })
+                    });
+                    return style;
+                }
+            })
+            map.addLayer(vectorLayer);
+        }
+    </script>
+</body>
+</html>

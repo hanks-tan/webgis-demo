@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/js/public/ol4/v4.6.5-dist/ol.css" type="text/css">
+    <title>Document</title>  
+    <style>
+        head,body{
+            margin: 0%;
+            background-color: black;
+       }
+        #map{
+            width: 100%;
+            height: 100%;
+            margin: 0%;
+            position: relative;
+        }
+        .btn{
+            top: 10px;
+            right: 20px;
+            position: absolute;
+            z-index: 1;
+        }
+        .btn button {
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+    <script src="/static/js/public/jquery/jquery/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/public/ol4/v4.6.5-dist/ol.js"></script>
+</head>
+<body>
+    <div class="btn">
+        <button id = 'kriging'> 空气质量</button>
+    </div>
+    <div id="map"></div>
+    <script src="/static/js/public/color.js"></script>
+    <script src="/static/js/map/xmap.js"></script>
+    <script src="/static/js/map/kriging.js"></script>
+    <script src="/static/js/map/airs.js"></script>
+    <script>
+        var data = '/static/data/city_air.geojson';     //空气质量数据,todo
+        var boundaryDataURL = '/static/data/china.geojson'                             //中国界限.todo
+        var clipBoundary = undefined;
+        var airLayer = undefined;
+        $(document).ready(function() {
+            xmap.initMap();
+            $.getJSON(boundaryDataURL ,function(data) {
+                var fts = (new ol.format.GeoJSON()).readFeatures(data);
+                clipBoundary = fts[0].getGeometry();
+            })
+        });
+        $('#kriging').click(function(){
+            if(!clipBoundary){
+                    var p = [];
+                    p.push([74.4,20.1],[74.4,56],[134.5,56],[134.5,20.1]);
+                    r = new ol.geom.Polygon([p]);
+            };        
+            $.getJSON(data,function (data) {
+                var fts = (new ol.format.GeoJSON()).readFeatures(data);
+                if(!airLayer){
+                    var opts = {
+                        features: fts,
+                        map: xmap.map,
+                        bourdary: clipBoundary
+                    }
+                    airLayer = new AirLayer(opts);
+                    airLayer.show();
+                }
+            })
+        })
+    </script>
+</body>
+</html>

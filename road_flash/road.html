@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>道路动画</title>
+    <link href="./public/ol4/v4.6.5-dist/ol.css" rel="stylesheet">
+    <script src="./public/jquery/jquery-3.3.1.min.js"></script>
+    <script src="./public/ol4/v4.6.5-dist/ol-debug.js"></script>
+    <style>
+        head,body, #map{
+            height: 100%;
+            width: 100%;
+            background-color: black;
+        }
+        .btn{
+            top: 20px;
+            right: 20px;
+            position: absolute;
+            z-index: 1;
+        }
+        .ol-attribution{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="btn">
+        <button type="button" id="sw">开关</button>
+        
+    </div>
+    <div id="map"></div>
+</body>
+<script>
+    var k = false;
+    var lines = [];
+    var riverLayer = undefined;
+    $(document).ready(function(){
+        xmap.initMap();
+        xmap.map.getView().setCenter([114.064962, 22.588296]);
+        staticRiverLayer = new ol.layer.Vector({
+            source: new ol.source.Vector(),
+            style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: '#FF8C00',
+                    width: 1
+                })
+            })
+        });
+        staticRiverLayer.on('precompose', function(evt){
+            var ctx = evt.context;
+            ctx.shadowBlur = 20;
+            // ctx.shadowColor  = '#FFF8DC';
+            // ctx.filter = 'grayscale(50%)';
+        })
+        staticRiverLayer.on('postcompose', function(evt){
+            var ctx = evt.context;
+            ctx.shadowBlur = 0;
+            ctx.shadowColor = 'black';
+        })
+        xmap.map.addLayer(staticRiverLayer);
+        var data_url = './data/lh_road.geojson';
+        $.getJSON(data_url, function(data) {
+            var pathFeatures = (new ol.format.GeoJSON()).readFeatures(data);
+            pathFeatures.forEach(function(element) {
+                var line = element.getGeometry();
+                lines.push(line);
+            })
+            staticRiverLayer.getSource().addFeatures(pathFeatures);
+        })
+    })
+
+    $('#sw').click(function() {
+        if(riverLayer === undefined) {
+            riverLayer = new RiverLayer({
+                map: xmap.map,
+                lines: lines,
+                name: 'river'
+            })
+        };
+        k = !k;
+        if(k) {
+            riverLayer.show();
+        } else {
+            riverLayer.remove();
+        }
+    })
+</script>
+<script src="./xmap.js"></script>
+<script src="./insertPoint_ol4.js"></script>
+<script src="./points-track.js"></script>
+<script src="./riverlayer2.js"></script>
+</html>

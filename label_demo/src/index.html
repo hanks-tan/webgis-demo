@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>OL2标注</title>
+  <link rel="stylesheet" href="./ol2/openlayers2/theme/default/style.css">
+  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+  <script src="./ol2/openlayers2/lib/OpenLayers.js"></script>
+  <style>
+    #map{
+        width: 100%;
+        height: 800px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+      <button id="addDataBtn">添加数据</button>
+      <button id="registerBtn">注册选择事件</button>
+  </div>
+  <div id="map"></div>
+  <script src="./app.js"></script>
+  <script>
+    $(document).ready(function(){
+      init();
+    })
+    $('#addDataBtn').click(function(){
+      loadData();
+    })
+    $('#registerBtn').click(function(){
+      registerClickEvent();
+    })
+  </script>
+</body>
+</html>
