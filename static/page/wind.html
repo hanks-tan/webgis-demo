@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>  
+    <style>
+        html,body,#map,#mycanvas{
+            width: 100%;
+            height: 700px;
+            border: 0pc;
+            background-color: black
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/leaflet/1.7.1/leaflet.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.7.1/leaflet.min.js"></script>
+    <script src="../js/leaflet-windy/windy.js"></script>
+</head>
+<body>
+    <div id="map">
+        <canvas id="mycanvas"></canvas>
+    </div>
+    <script src="../js/map/show-windy.js"></script>
+</body>
+</html>
