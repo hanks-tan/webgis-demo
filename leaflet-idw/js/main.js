@@ -5,7 +5,7 @@
     var tiles = L.tileLayer('https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetGray/MapServer/tile/{z}/{y}/{x}', {
     }).addTo(map);
 
-    $.getJSON('/data/city_air.geojson',function(data){
+    $.getJSON('./data/city_air.geojson',function(data){
         var features = data.features;
 
         showidwLayer(features)

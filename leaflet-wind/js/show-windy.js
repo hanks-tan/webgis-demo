@@ -41,7 +41,7 @@ function windLayer(data){
     map.on('click',function (e) {
         L.popup().setLatLng(e.latlng).setContent(e.latlng.toString()).openOn(map)
     })
-    var data = '/data/windydata.json';
+    var data = './data/windydata.json';
     $.getJSON(data).done(function(data){
         var layer = windLayer(data);
         layer.addTo(map);

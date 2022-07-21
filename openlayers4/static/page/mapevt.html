@@ -9,42 +9,56 @@
     head,body{
         margin: 0%;
         background-color: black;
+        padding: 0;
       }
     #map{
       width: 100%;
-      height: 80%;
+      height: 100vh;
       margin: 0%;
       position: relative;
     }
     #windyInfo{
       background-color: brown;
-
+      color: #fff;
     }
-    .mao{
+    .tools{
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      display: inline;
+      z-index: 1;
+    }
+    .map-pop{
       display: inline;
     }
+    .ol-zoom{
+      display: none;
+    }
   </style>
-  <script src="../js/public/jquery/jquery/jquery-3.3.1.min.js"></script>
+  <script src="../js/public/jquery/jquery-3.3.1.min.js"></script>
   <script src="../js/public/ol4/v4.6.5-dist/ol.js"></script>
 </head>
 <body>
-  <div>
+  <div class="tools">
     <button type="button" onclick="registerEvt()">注册事件</button>
     <button type="button" onclick="unregisterEvt()">清除事件</button>
   </div>
+  <div id="windyInfo"></div>
   <div id="map"></div>
   <script>
     var map = new ol.Map({
       target: 'map',
       layers: [
         new ol.layer.Tile({
-          source: new ol.source.TileWMS({
-            url: 'http://10.192.43.161:8080/geoserver/fenyang/wms',
-            params: {
-              'LAYERS': 'fenyang:fenyang_map',
-              'TILE': true
-            }
-            
+          // source: new ol.source.TileWMS({
+          //   url: 'http://10.192.43.161:8080/geoserver/fenyang/wms',
+          //   params: {
+          //     'LAYERS': 'fenyang:fenyang_map',
+          //     'TILE': true
+          //   }
+          // })
+          source: new ol.source.XYZ({
+            url: 'https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
           })
         })
       ],
@@ -54,11 +68,10 @@
         center: [111.87, 37.29]
       })
     })
-    var infoDiv = document.createElement('div')
-    infoDiv.id = 'windyInfo'
+    var infoDiv = document.getElementById('windyInfo')
     var overlay = new ol.Overlay({
       element: infoDiv,
-      className: 'mao',
+      className: 'map-pop',
       positioning: 'center-left',
       autoPan: true,
       stopEvent: false,
@@ -78,8 +91,19 @@
     }
 
     function mapEvtHandle(evt) {
+      var element = overlay.getElement()
+      $(element).popover('destroy')
       var coord = evt.coordinate
       infoDiv.innerText = `${coord[0]},${coord[1]}`
+      overlay.setPosition(coord)
+      var hdms = ol.coordinate.toStringHDMS(coord)
+      $(element).popover({
+        'placement': 'top',
+        'animation': false,
+        'html': true,
+        'content': hdms
+      })
+      $(element).popover('show')
     }
 
   </script>
