@@ -38,7 +38,7 @@ function windLayer(data){
 
 (function(){
     var map = initMap();
-    var data = '../../data/windydata1.json';
+    var data = '../data/windydata1.json';
     $.getJSON(data).done(function(data){
         var layer = windLayer(data);
         layer.addTo(map);
