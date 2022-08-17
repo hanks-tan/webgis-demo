@@ -9,7 +9,7 @@ $.extend(xmap, {
      */
     initMap: function(mapDiv) {
         var url = 'https://tiles.windy.com/tiles/v9.0/darkmap/{z}/{x}/{y}.png';
-        url = 'https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}';
+        // url = 'https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}';
         url = 'http://tile.stamen.com/toner/{z}/{x}/{y}.png'
 
         this.baseLayer = new ol.layer.Tile({
